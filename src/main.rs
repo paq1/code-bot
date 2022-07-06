@@ -2,11 +2,12 @@ mod core;
 mod bot;
 
 use crate::bot::config::config_service_impl::ConfigServiceImpl;
-use crate::bot::handler::{BotState, Handler};
+use crate::bot::handler::Handler;
 use crate::core::config::config_service::ConfigService;
 
 use serenity::prelude::*;
 
+struct Toto;
 #[tokio::main]
 async fn main() {
     // initialisation des services
@@ -24,7 +25,7 @@ async fn main() {
     // creation du bot
     let mut client =
         Client::builder(&token, intents)
-            .event_handler(Handler {state: BotState::Nothing})
+            .event_handler(Handler)
             .await
             .expect("Err creating client");
 

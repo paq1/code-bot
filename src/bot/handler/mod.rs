@@ -1,23 +1,21 @@
+pub mod state;
+
 use serenity::async_trait;
 use serenity::model::channel::Message;
 use serenity::model::gateway::Ready;
 use serenity::prelude::*;
 
-#[derive(PartialEq)]
-pub enum BotState {
-    Nothing,
-    ChoiceSurvey,
-    Survey
-}
 
-pub struct Handler {pub state: BotState}
+use crate::bot::handler::state::{STATE, BotState};
+
+pub struct Handler;
 
 #[async_trait]
 impl EventHandler for Handler {
     // todo rendre immutable
-    async fn message(&mut self, ctx: Context, msg: Message) {
-        trouve_moi_une_meuf(&ctx, &msg, &self.state).await;
-        choose_survey(&ctx, &msg, &mut self.state).await;
+    async fn message(&self, ctx: Context, msg: Message) {
+        trouve_moi_une_meuf(&ctx, &msg).await;
+        // choose_survey(&ctx, &msg, &mut self.state).await;
     }
 
     async fn ready(&self, _: Context, ready: Ready) {
@@ -41,11 +39,11 @@ async fn survey_test(ctx: &Context, msg: &Message, state: &BotState) {
 // todo clean ImageFile (le mettre dans une factory ou autre)
 struct ImageFile(tokio::fs::File, String);
 
-async fn trouve_moi_une_meuf(ctx: &Context, msg: &Message, state: &BotState) {
+async fn trouve_moi_une_meuf(ctx: &Context, msg: &Message) {
     let femme_cheval = get_image_femme_cheval_singe().await;
     let file = [(&femme_cheval.0, femme_cheval.1.as_str())];
 
-    if msg.content == "!trouvemoiunemeuf" && *state == BotState::Nothing {
+    if msg.content == "!trouvemoiunemeuf" {
         msg.channel_id
             .send_message(&ctx.http, |create_message| {
                 create_message.files(file);
