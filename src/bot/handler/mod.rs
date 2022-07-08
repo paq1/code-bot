@@ -12,7 +12,7 @@ pub struct Handler;
 
 #[async_trait]
 impl EventHandler for Handler {
-    // todo rendre immutable
+    
     async fn message(&self, ctx: Context, msg: Message) {
         trouve_moi_une_meuf(&ctx, &msg).await;
         // choose_survey(&ctx, &msg, &mut self.state).await;
